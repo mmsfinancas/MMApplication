@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MMDomain;
-using MMService;
+using MMService.Interfaces;
 
 namespace MMApplication.Controllers
 {
@@ -13,20 +10,22 @@ namespace MMApplication.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        // GET: api/Users
+        private readonly IUserService _service;
+        public UserController(IUserService service)
+        {
+            _service = service;
+        }
+
         [HttpGet]
         public async Task<List<User>> Get()
         {
-            UserService userModel = new UserService();
-            return await userModel.Get();
+            return await _service.Get();
         }
 
-        // POST: api/Users
         [HttpPost]
         public void Post(User users)
         {
-            UserService userModel = new UserService();
-            userModel.Post(users);
+            _service.Post(users);
         }
     }
 }
