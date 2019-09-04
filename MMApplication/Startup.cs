@@ -27,8 +27,7 @@ namespace MMApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            Injection i = new Injection();
-            i.config(services);
+            Injection.config(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

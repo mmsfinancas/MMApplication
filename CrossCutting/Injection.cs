@@ -8,9 +8,9 @@ namespace CrossCutting
 {
     public class Injection
     {
-        public void config(IServiceCollection services)
+        public static void config(IServiceCollection services)
         {
-            // Services
+            // Service
             services.AddScoped<IUserService, UserService>();
 
             // Database
