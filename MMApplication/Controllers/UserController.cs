@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MMDomain;
@@ -26,6 +28,15 @@ namespace MMApplication.Controllers
         public void Post(User users)
         {
             _service.Post(users);
+        }
+
+        [HttpPost]
+        [Route("forgotPassword")]
+        public async Task<string> forgotPassword(User user)
+        {
+            var teste = user.Email;
+
+            return await _service.Post(teste);
         }
     }
 }
