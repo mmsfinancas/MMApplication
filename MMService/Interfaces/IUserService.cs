@@ -10,5 +10,6 @@ namespace MMService.Interfaces
     {
         void Post(User user);
         Task<List<User>> Get();
+        Task<string> Post(string userMail);
     }
 }

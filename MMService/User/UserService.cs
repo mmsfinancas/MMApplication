@@ -31,6 +31,20 @@ namespace MMService
             return await _database.Get();
         }
 
+        public async Task<string> Post(string userMail){
+
+            var teste = await _database.Get(userMail);
+            string retorno = "";
+
+            if (teste.Count > 0)
+            {
+                retorno = "Solicitação de troca de senha enviada para o e-mail informado";
+            }
+            else
+                retorno = "E-mail não localizado no cadastro!";
+            
+            return retorno;
+        }
         public string CreateSalt()
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();

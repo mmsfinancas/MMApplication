@@ -20,6 +20,12 @@ namespace MMInfra
             return users;
         }
 
+        public async Task<List<User>> Get(string email)
+        {
+            var users = await this.Collection.Find(x => x.Email == email).ToListAsync();
+            return users;
+        }
+
         public void Post(User user)
         {
             this.Insert(user);
