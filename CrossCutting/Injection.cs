@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MMInfra;
+using MMInfra.Collections;
 using MMInfra.Interfaces;
 using MMService;
 using MMService.Interfaces;
@@ -15,6 +15,7 @@ namespace CrossCutting
 
             // Database
             services.AddScoped<IUserDB, UserDB>();
+            services.AddScoped<IUserResetPasswordDB, UserResetPasswordDB>();
         }
     }
 }

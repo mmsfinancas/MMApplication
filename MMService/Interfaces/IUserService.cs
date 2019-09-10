@@ -1,4 +1,4 @@
-﻿using MMDomain;
+﻿using MMDomain.User;
 using System;
 using System.Collections.Generic;
 using System.Text;

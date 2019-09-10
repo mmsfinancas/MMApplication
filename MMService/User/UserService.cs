@@ -1,5 +1,5 @@
-﻿using MMDomain;
-using MMInfra;
+﻿using MMDomain.User;
+using MMInfra.Collections;
 using MMInfra.Interfaces;
 using MMService.Interfaces;
 using System;
@@ -12,10 +12,12 @@ namespace MMService
 {
     public class UserService : IUserService
     {
-        private readonly IUserDB _database;
-        public UserService(IUserDB database)
+        private readonly IUserDB _dbUser;
+        private readonly IUserResetPasswordDB _dbResetPassword;
+        public UserService(IUserDB database1, IUserResetPasswordDB database2)
         {
-            _database = database;
+            _dbUser = database1;
+            _dbResetPassword = database2;
         }
 
         public void Post(User user)
@@ -23,21 +25,25 @@ namespace MMService
             user.Jump = CreateSalt();
             user.Asterisk = CreateHash(user.Asterisk, user.Jump);
 
-            _database.Post(user);
+            _dbUser.Post(user);
         }
 
         public async Task<List<User>> Get()
         {
-            return await _database.Get();
+            return await _dbUser.Get();
         }
 
         public async Task<string> Post(string userMail){
 
-            var teste = await _database.Get(userMail);
-            string retorno = "";
+            var hasUser = await _dbUser.Get(userMail);
+            var retorno = "";
 
-            if (teste.Count > 0)
+            if (hasUser)
             {
+                UserResetPassword resetPassword = new UserResetPassword();
+                resetPassword.Email = userMail;
+                resetPassword.Token = CreateHash(userMail, CreateSalt());
+                _dbResetPassword.Post(resetPassword);
                 retorno = "Solicitação de troca de senha enviada para o e-mail informado";
             }
             else

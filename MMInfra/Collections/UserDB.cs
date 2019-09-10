@@ -1,11 +1,11 @@
-﻿using MMDomain;
+﻿using MMDomain.User;
 using MMInfra.Config;
 using MMInfra.Interfaces;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MMInfra
+namespace MMInfra.Collections
 {
     public class UserDB : DatabaseConfig<User>, IUserDB
     {
@@ -19,13 +19,14 @@ namespace MMInfra
             var users = await this.Collection.Find(_ => true).ToListAsync();
             return users;
         }
-
-        public async Task<List<User>> Get(string email)
+        public async Task<bool> Get(string email)
         {
             var users = await this.Collection.Find(x => x.Email == email).ToListAsync();
-            return users;
-        }
+            if (users.Count > 0)
+                return true;
 
+            return false;
+        }
         public void Post(User user)
         {
             this.Insert(user);

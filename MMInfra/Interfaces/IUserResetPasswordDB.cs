@@ -1,13 +1,13 @@
 ﻿using MMDomain.User;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MMInfra.Interfaces
 {
-    public interface IUserDB
+    public interface IUserResetPasswordDB
     {
-        Task<List<User>> Get();
-        Task<bool> Get(string email);
-        void Post(User user);
+        void Post(UserResetPassword userResetPassword);
     }
 }
