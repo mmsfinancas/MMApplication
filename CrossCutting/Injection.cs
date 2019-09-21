@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MMInfra.Collections;
 using MMInfra.Interfaces;
+using MMInfra.Service.Interfaces;
+using MMInfra.Service.SMTP;
 using MMService;
 using MMService.Interfaces;
 
@@ -13,9 +15,12 @@ namespace CrossCutting
             // Service
             services.AddScoped<IUserService, UserService>();
 
-            // Database
+            // Infra.Data
             services.AddScoped<IUserDB, UserDB>();
             services.AddScoped<IUserResetPasswordDB, UserResetPasswordDB>();
+
+            // Infra.Service
+            services.AddScoped<ISmtpInfra, SmtpInfra>();
         }
     }
 }

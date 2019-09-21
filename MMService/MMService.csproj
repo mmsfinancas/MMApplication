@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MMInfra.Service\MMInfra.Service.csproj" />
     <ProjectReference Include="..\MMInfra\MMInfra.csproj" />
   </ItemGroup>
 
