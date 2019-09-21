@@ -1,6 +1,7 @@
 ﻿using MMDomain.User;
 using MMInfra.Collections;
 using MMInfra.Interfaces;
+using MMInfra.Service.Interfaces;
 using MMService.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,15 @@ namespace MMService
     {
         private readonly IUserDB _dbUser;
         private readonly IUserResetPasswordDB _dbResetPassword;
-        public UserService(IUserDB database1, IUserResetPasswordDB database2)
+        private readonly ISmtpInfra _smtpInfra;
+        public UserService(IUserDB database1, IUserResetPasswordDB database2, ISmtpInfra smtpInfra)
         {
             _dbUser = database1;
             _dbResetPassword = database2;
+            _smtpInfra = smtpInfra;
         }
 
-        public void Post(User user)
+        public void InsertUser(User user)
         {
             user.Jump = CreateSalt();
             user.Asterisk = CreateHash(user.Asterisk, user.Jump);
@@ -29,12 +32,12 @@ namespace MMService
             _dbUser.Post(user);
         }
 
-        public async Task<List<User>> Get()
+        public async Task<List<User>> GetUsers()
         {
             return await _dbUser.Get();
         }
 
-        public async Task<string> Post(string userMail){
+        public async Task<string> ResetPassword(string userMail){
 
             var hasUser = await _dbUser.Get(userMail);
             var retorno = "";
@@ -45,8 +48,20 @@ namespace MMService
                 resetPassword.Email = userMail;
                 resetPassword.Token = CreateHash(userMail, CreateSalt());
                 _dbResetPassword.Post(resetPassword);
-                
-                retorno = sendMail(userMail, resetPassword.Token);
+
+                string subject = "Reset de Senha";
+                string body = " Olá!<br/>Segue abaixo link para troca de senha conforme solicitado: https://lalalala/" + resetPassword.Token;
+
+                try
+                {
+                    _smtpInfra.SendMail(userMail, subject, body);
+                }
+                catch (Exception e)
+                {
+                    return "Houve um erro ao enviar o e-mail...";
+                }
+
+                return "Solicitação de troca de senha enviada para o e - mail informado";
             }
             else
                 retorno = "E-mail não localizado no cadastro!";
@@ -67,35 +82,6 @@ namespace MMService
             SHA256Managed sHA256ManagedString = new SHA256Managed();
             byte[] hash = sHA256ManagedString.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
-        }
-
-        public string sendMail(string mailTo, string token)
-        {
-            SmtpClient client = new System.Net.Mail.SmtpClient();
-            client.Host = "smtp.gmail.com";
-            client.Port = 587;
-            client.EnableSsl = true;
-            client.Credentials = new System.Net.NetworkCredential("mmsfinancas@gmail.com", "Mmalcateia123");
-            MailMessage mail = new MailMessage();
-            mail.Sender = new System.Net.Mail.MailAddress("mmsfinancas@gmail.com", "MM's Financas");
-            mail.From = new MailAddress("mmsfinancas@gmail.com", "MM's Financas");
-            mail.To.Add(new MailAddress(mailTo));
-            mail.Subject = "Reset de Senha";
-            mail.Body = " Olá!<br/>Segue abaixo link para troca de senha conforme solicitado: https://lalalala/" + token;
-            mail.IsBodyHtml = true;
-            mail.Priority = MailPriority.High;
-
-            try
-            {
-                client.Send(mail);                
-            }
-            catch (System.Exception erro)
-            {
-                return "Houve um erro ao enviar o e-mail...";
-            }
-
-            mail = null;
-            return "Solicitação de troca de senha enviada para o e - mail informado";            
         }
     }
 }

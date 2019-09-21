@@ -21,7 +21,7 @@ namespace MMApplication.Controllers
         [HttpPost]
         public async Task<string> Post(UserResetPassword userEmail)
         {
-            return await _service.Post(userEmail.Email);
+            return await _service.ResetPassword(userEmail.Email);
         }
     }
 }

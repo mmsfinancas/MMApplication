@@ -21,13 +21,13 @@ namespace MMApplication.Controllers
         [HttpGet]
         public async Task<List<User>> Get()
         {
-            return await _service.Get();
+            return await _service.GetUsers();
         }
 
         [HttpPost]
         public void Post(User users)
         {
-            _service.Post(users);
+            _service.InsertUser(users);
         }
     }
 }

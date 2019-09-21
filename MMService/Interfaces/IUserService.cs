@@ -8,8 +8,8 @@ namespace MMService.Interfaces
 {
     public interface IUserService
     {
-        void Post(User user);
-        Task<List<User>> Get();
-        Task<string> Post(string userMail);
+        void InsertUser(User user);
+        Task<List<User>> GetUsers();
+        Task<string> ResetPassword(string userMail);
     }
 }

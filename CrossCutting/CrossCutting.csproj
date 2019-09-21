@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MMInfra.Service\MMInfra.Service.csproj" />
     <ProjectReference Include="..\MMService\MMService.csproj" />
   </ItemGroup>
 
