@@ -4,6 +4,7 @@ using MMInfra.Interfaces;
 using MMService.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,8 @@ namespace MMService
                 resetPassword.Email = userMail;
                 resetPassword.Token = CreateHash(userMail, CreateSalt());
                 _dbResetPassword.Post(resetPassword);
-                retorno = "Solicitação de troca de senha enviada para o e-mail informado";
+                
+                retorno = sendMail(userMail, resetPassword.Token);
             }
             else
                 retorno = "E-mail não localizado no cadastro!";
@@ -65,6 +67,35 @@ namespace MMService
             SHA256Managed sHA256ManagedString = new SHA256Managed();
             byte[] hash = sHA256ManagedString.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
+        }
+
+        public string sendMail(string mailTo, string token)
+        {
+            SmtpClient client = new System.Net.Mail.SmtpClient();
+            client.Host = "smtp.gmail.com";
+            client.Port = 587;
+            client.EnableSsl = true;
+            client.Credentials = new System.Net.NetworkCredential("mmsfinancas@gmail.com", "Mmalcateia123");
+            MailMessage mail = new MailMessage();
+            mail.Sender = new System.Net.Mail.MailAddress("mmsfinancas@gmail.com", "MM's Financas");
+            mail.From = new MailAddress("mmsfinancas@gmail.com", "MM's Financas");
+            mail.To.Add(new MailAddress(mailTo));
+            mail.Subject = "Reset de Senha";
+            mail.Body = " Olá!<br/>Segue abaixo link para troca de senha conforme solicitado: https://lalalala/" + token;
+            mail.IsBodyHtml = true;
+            mail.Priority = MailPriority.High;
+
+            try
+            {
+                client.Send(mail);                
+            }
+            catch (System.Exception erro)
+            {
+                return "Houve um erro ao enviar o e-mail...";
+            }
+
+            mail = null;
+            return "Solicitação de troca de senha enviada para o e - mail informado";            
         }
     }
 }
